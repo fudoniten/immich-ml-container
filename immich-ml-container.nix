@@ -19,6 +19,7 @@ let
       ports = [ "${toString cfg.port}:3003" ];
       restart = "always";
       volumes = [ "${cfg.state-directory}:/cache" ];
+      env = mkIf cfg.debug { IMMICH_LOG_LEVEL = "debug"; };
     };
   });
 
@@ -46,6 +47,8 @@ in {
       type = str;
       description = "";
     };
+
+    debug = mkEnableOption "Enable debugging logs.";
 
     # TODO: maybe have different types?
   };

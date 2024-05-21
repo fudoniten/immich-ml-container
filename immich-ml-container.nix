@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
+with lib;
 let cfg = config.services.immichMlContainer;
-
 in {
   options.services.immichMlContainer = with types; {
     enable = mkEnableOption "Enable machine learning container.";

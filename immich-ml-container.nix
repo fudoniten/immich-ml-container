@@ -1,7 +1,27 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-let cfg = config.services.immichMlContainer;
+let
+  cfg = config.services.immichMlContainer;
+
+  immichMlConfigYaml = pkgs.writeJSON "immich-ml-compose.yml" {
+    version = "3.4";
+    networks.default.name = "immich-ml";
+    volumes = { };
+    services.immich-ml = {
+      image =
+        "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
+      deploy.resources.reservations.devices = [{
+        driver = "nvidia";
+        count = 1;
+        capabilities = [ "gpu" ];
+      }];
+      ports = [ "${cfg.port}:3003" ];
+      restart = "always";
+      volumes = [ "${cfg.state-directory}:/cache" ];
+    };
+  };
+
 in {
   options.services.immichMlContainer = with types; {
     enable = mkEnableOption "Enable machine learning container.";
@@ -31,27 +51,20 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd.tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
-
-    virtualisation.arion.projects.immich-ml.settings = let
-      image = { ... }: {
-        project.name = "immich-ml";
-        services.immich-ml = {
-          image.rawConfig.deploy.resources.reservations.devices = [{
-            driver = "nvidia";
-            count = 1;
-            capabilities = [ "gpu" ];
-          }];
-          service = {
-            image =
-              "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
-            restart = "always";
-            ports = [ "${toString cfg.port}:3003" ];
-            volumes = [ "${cfg.state-directory}:/cache" ];
-          };
+    systemd = {
+      services.immich-machine-learning = {
+        after = [ "network-online.target" ];
+        before = [ "nginx.service" ];
+        path = with pkgs; [ podman-compose ];
+        serviceConfig = {
+          ExecStart = pkgs.writeShellScript "immich-machine-learning" ''
+            podman-compose -f ${immichMlConfigYaml}
+          '';
         };
       };
-    in { imports = [ image ]; };
+
+      tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
+    };
 
     services.nginx = {
       enable = true;

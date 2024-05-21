@@ -16,7 +16,7 @@ let
         count = 1;
         capabilities = [ "gpu" ];
       }];
-      ports = [ "${cfg.port}:3003" ];
+      ports = [ "${toString cfg.port}:3003" ];
       restart = "always";
       volumes = [ "${cfg.state-directory}:/cache" ];
     };

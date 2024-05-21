@@ -14,6 +14,7 @@ in {
     port = mkOption {
       type = port;
       description = "Port on which to listen for connections.";
+      default = 3003;
     };
 
     state-directory = mkOption {

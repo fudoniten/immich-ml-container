@@ -37,7 +37,7 @@ in {
       image = { ... }: {
         project.name = "immich-ml";
         services.immich-ml = {
-          image.rawConfig.deploy.resoruces.reservations.devices = [{
+          image.rawConfig.deploy.resources.reservations.devices = [{
             driver = "nvidia";
             count = 1;
             capabilities = [ "gpu" ];

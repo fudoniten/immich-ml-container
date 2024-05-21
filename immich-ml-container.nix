@@ -4,7 +4,7 @@ with lib;
 let
   cfg = config.services.immichMlContainer;
 
-  immichMlConfigYaml = pkgs.writeJSON "immich-ml-compose.yml" {
+  immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (pkgs.toJSON {
     version = "3.4";
     networks.default.name = "immich-ml";
     volumes = { };
@@ -20,7 +20,7 @@ let
       restart = "always";
       volumes = [ "${cfg.state-directory}:/cache" ];
     };
-  };
+  });
 
 in {
   options.services.immichMlContainer = with types; {

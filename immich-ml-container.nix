@@ -58,7 +58,7 @@ in {
         path = with pkgs; [ podman-compose ];
         serviceConfig = {
           ExecStart = pkgs.writeShellScript "immich-machine-learning" ''
-            podman-compose -f ${immichMlConfigYaml}
+            podman-compose -f ${immichMlConfigYaml} up
           '';
         };
       };

@@ -33,7 +33,7 @@ in {
   config = mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
 
-    virtualisation.arion.projects.immich.settings = let
+    virtualisation.arion.projects.immich-ml.settings = let
       image = { ... }: {
         project.name = "immich-ml";
         services.immich-ml = {

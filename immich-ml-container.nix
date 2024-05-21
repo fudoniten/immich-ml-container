@@ -30,7 +30,7 @@ in {
     # TODO: maybe have different types?
   };
 
-  config = {
+  config = mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
 
     virtualisation.arion.projects.immich.settings = let

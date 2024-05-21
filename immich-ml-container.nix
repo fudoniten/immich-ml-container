@@ -4,7 +4,7 @@ with lib;
 let
   cfg = config.services.immichMlContainer;
 
-  immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (pkgs.toJSON {
+  immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (toJSON {
     version = "3.4";
     networks.default.name = "immich-ml";
     volumes = { };

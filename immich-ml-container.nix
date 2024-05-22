@@ -14,7 +14,7 @@ let
       deploy.resources.reservations.devices = [{
         driver = "nvidia";
         count = 1;
-        capabilities = [ "gpu" ];
+        capabilities = [ "gpu" "compute" "video" ];
       }];
       ports = [ "${toString cfg.port}:3003" ];
       restart = "always";

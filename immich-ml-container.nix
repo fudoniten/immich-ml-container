@@ -58,10 +58,10 @@ in {
       services.immich-machine-learning = {
         after = [ "network-online.target" ];
         before = [ "nginx.service" ];
-        path = with pkgs; [ docker-compose coreutils nvidia-podman ];
+        path = with pkgs; [ docker-compose nvidia-podman coreutils ];
         serviceConfig = {
           ExecStart = pkgs.writeShellScript "immich-machine-learning" ''
-            podman-compose -f ${immichMlConfigYaml} up
+            docker-compose -f ${immichMlConfigYaml} up
           '';
         };
       };

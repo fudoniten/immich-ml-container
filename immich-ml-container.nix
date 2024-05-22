@@ -5,7 +5,7 @@ let
   cfg = config.services.immichMlContainer;
 
   immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (builtins.toJSON {
-    version = "3.4";
+    version = "3.8";
     name = "immich-machine-learning";
     networks.default.name = "immich-ml";
 

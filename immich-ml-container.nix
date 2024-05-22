@@ -18,7 +18,7 @@ let
       ports = [ "${toString cfg.port}:3003" ];
       restart = "always";
       volumes = [ "${cfg.state-directory}:/cache" ];
-      environment = mkIf cfg.debug { IMMICH_LOG_LEVEL = "debug"; };
+      environment = { IMMICH_LOG_LEVEL = "debug"; };
     };
   });
 

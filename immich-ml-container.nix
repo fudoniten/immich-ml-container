@@ -6,7 +6,9 @@ let
 
   immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (builtins.toJSON {
     version = "3.4";
+    name = "immich-machine-learning";
     networks.default.name = "immich-ml";
+
     volumes = { };
     services.immich-ml = {
       image =
@@ -58,10 +60,10 @@ in {
       services.immich-machine-learning = {
         after = [ "network-online.target" ];
         before = [ "nginx.service" ];
-        path = with pkgs; [ podman-compose podman coreutils ];
+        path = with pkgs; [ docker-compose nvidia-podman coreutils ];
         serviceConfig = {
           ExecStart = pkgs.writeShellScript "immich-machine-learning" ''
-            podman-compose -f ${immichMlConfigYaml} up
+            docker-compose -f ${immichMlConfigYaml} up
           '';
         };
       };

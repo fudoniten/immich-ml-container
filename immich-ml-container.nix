@@ -13,15 +13,12 @@ let
     services.immich-ml = {
       image =
         "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
-      deploy.resources.reservations.devices = [{
-        driver = "nvidia";
-        count = 1;
-        capabilities = [ "gpu" "compute" "video" ];
-      }];
+      deploy.resources.reservations.devices =
+        [{ capabilities = [ "nvidia-gpu" "nvidia-compute" "nvidia-video" ]; }];
       ports = [ "${toString cfg.port}:3003" ];
       restart = "always";
       volumes = [ "${cfg.state-directory}:/cache" ];
-      env = mkIf cfg.debug { IMMICH_LOG_LEVEL = "debug"; };
+      environment = mkIf cfg.debug { IMMICH_LOG_LEVEL = "debug"; };
     };
   });
 

@@ -42,7 +42,7 @@ in {
         image =
           "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
         volumes = [ "${cfg.state-directory}:/cache" ];
-        ports = [ "${cfg.port}:3003" ];
+        ports = [ "${toString cfg.port}:3003" ];
         extraOptions = [ "--gpus=all" ];
       };
     };

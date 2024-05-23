@@ -23,10 +23,7 @@ in {
       description = "Path on which to store service state.";
     };
 
-    immich-version = mkOption {
-      type = str;
-      description = "";
-    };
+    immich-version = mkOption { type = str; };
 
     debug = mkEnableOption "Enable debugging logs.";
 
@@ -52,10 +49,12 @@ in {
       virtualHosts = genAttrs cfg.hostnames (hostname: {
         enableACME = false;
         forceSSL = false;
+        extraConfig = ''
+          client_max_body_size 500M;
+        '';
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.port}";
           extraConfig = ''
-            client_max_body_size 500M;
             proxy_request_buffering off;
           '';
           recommendedProxySettings = true;

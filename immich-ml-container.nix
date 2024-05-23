@@ -53,7 +53,7 @@ in {
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.port}";
           extraConfig = ''
-            client_max_body_size = 1024M;
+            client_max_body_size 1024M;
           '';
           recommendedProxySettings = true;
           proxyWebsockets = true;

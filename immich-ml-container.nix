@@ -46,12 +46,10 @@ in {
 
     services.nginx = {
       enable = true;
+      clientMaxBodySize = "1024M";
       virtualHosts = genAttrs cfg.hostnames (hostname: {
         enableACME = false;
         forceSSL = false;
-        extraConfig = ''
-          client_max_body_size 500M;
-        '';
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.port}";
           extraConfig = ''

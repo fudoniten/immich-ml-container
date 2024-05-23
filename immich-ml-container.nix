@@ -36,7 +36,7 @@ in {
   config = mkIf cfg.enable {
     systemd.tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
 
-    virtualisations.oci-containers.containers = {
+    virtualisation.oci-containers.containers = {
       immich-machine-learning = {
         autoStart = true;
         image =

@@ -54,7 +54,10 @@ in {
         forceSSL = false;
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.port}";
-          extraConfig = "client_max_body_size 500M;";
+          extraConfig = ''
+            client_max_body_size 500M;
+            proxy_request_buffering off;
+          '';
           recommendedProxySettings = true;
         };
       });

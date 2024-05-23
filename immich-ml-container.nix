@@ -59,6 +59,7 @@ in {
             proxy_request_buffering off;
           '';
           recommendedProxySettings = true;
+          proxyWebsockets = true;
         };
       });
     };

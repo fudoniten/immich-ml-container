@@ -1,26 +1,7 @@
 { config, lib, pkgs, ... }:
 
 with lib;
-let
-  cfg = config.services.immichMlContainer;
-
-  immichMlConfigYaml = pkgs.writeText "immich-ml-compose.yml" (builtins.toJSON {
-    version = "3.8";
-    name = "immich-machine-learning";
-    networks.default.name = "immich-ml";
-
-    volumes = { };
-    services.immich-ml = {
-      image =
-        "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
-      deploy.resources.reservations.devices =
-        [{ capabilities = [ "nvidia-gpu" "nvidia-compute" "nvidia-video" ]; }];
-      ports = [ "${toString cfg.port}:3003" ];
-      restart = "always";
-      volumes = [ "${cfg.state-directory}:/cache" ];
-      environment = { IMMICH_LOG_LEVEL = "debug"; };
-    };
-  });
+let cfg = config.services.immichMlContainer;
 
 in {
   options.services.immichMlContainer = with types; {
@@ -53,19 +34,17 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd = {
-      services.immich-machine-learning = {
-        after = [ "network-online.target" ];
-        before = [ "nginx.service" ];
-        path = with pkgs; [ docker-compose nvidia-podman coreutils ];
-        serviceConfig = {
-          ExecStart = pkgs.writeShellScript "immich-machine-learning" ''
-            docker-compose -f ${immichMlConfigYaml} up
-          '';
-        };
-      };
+    systemd.tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
 
-      tmpfiles.rules = [ "d ${cfg.state-directory} 0750 root root - -" ];
+    virtualisations.oci-containers.containers = {
+      immich-machine-learning = {
+        autoStart = true;
+        image =
+          "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
+        volumes = [ "${cfg.state-directory}:/cache" ];
+        ports = [ "${cfg.port}:3003" ];
+        extraOptions = [ "--gpus=all" ];
+      };
     };
 
     services.nginx = {

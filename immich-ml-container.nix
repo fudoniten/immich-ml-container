@@ -18,6 +18,12 @@ in {
       default = 3003;
     };
 
+    metrics-port = mkOption {
+      type = port;
+      description = "Port on which to supply metrics.";
+      default = 9090;
+    };
+
     state-directory = mkOption {
       type = str;
       description = "Path on which to store service state.";
@@ -39,8 +45,10 @@ in {
         image =
           "ghcr.io/immich-app/immich-machine-learning:${cfg.immich-version}-cuda";
         volumes = [ "${cfg.state-directory}:/cache" ];
-        ports = [ "${toString cfg.port}:3003" ];
+        ports =
+          [ "${toString cfg.port}:3003" "${toString cfg.metrics-port}:9090" ];
         extraOptions = [ "--gpus=all" ];
+        environment.IMMICH_METRICS = "true";
       };
     };
 

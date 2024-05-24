@@ -29,6 +29,18 @@ in {
       description = "Path on which to store service state.";
     };
 
+    workers = mkOption {
+      type = int;
+      description = "Number of workers to run.";
+      default = 3;
+    };
+
+    threads = mkOption {
+      type = int;
+      description = "Number of request threads to run.";
+      default = 12;
+    };
+
     immich-version = mkOption { type = str; };
 
     debug = mkEnableOption "Enable debugging logs.";
@@ -48,7 +60,11 @@ in {
         ports =
           [ "${toString cfg.port}:3003" "${toString cfg.metrics-port}:9090" ];
         extraOptions = [ "--gpus=all" ];
-        environment.IMMICH_METRICS = "true";
+        environment = {
+          IMMICH_METRICS = "true";
+          MACHINE_LEARNING_WORKERS = cfg.workers;
+          MACHINE_LEARNING_REQUEST_THREADS = cfg.threads;
+        };
       };
     };
 

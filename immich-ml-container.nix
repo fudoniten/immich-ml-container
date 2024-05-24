@@ -62,8 +62,8 @@ in {
         extraOptions = [ "--gpus=all" ];
         environment = {
           IMMICH_METRICS = "true";
-          MACHINE_LEARNING_WORKERS = cfg.workers;
-          MACHINE_LEARNING_REQUEST_THREADS = cfg.threads;
+          MACHINE_LEARNING_WORKERS = toString cfg.workers;
+          MACHINE_LEARNING_REQUEST_THREADS = toString cfg.threads;
         };
       };
     };

@@ -58,6 +58,10 @@ in {
       virtualHosts = genAttrs cfg.hostnames (hostname: {
         enableACME = false;
         forceSSL = false;
+        locations."/metrics" = {
+          proxyPass = "http://127.0.0.1:${toString cfg.metrics-port}";
+          recommendedProxySettings = true;
+        };
         locations."/" = {
           proxyPass = "http://127.0.0.1:${toString cfg.port}";
           recommendedProxySettings = true;
